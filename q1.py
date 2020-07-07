@@ -239,32 +239,33 @@ def BFGS(target_func, set, args, alpha0, sigma, beta, epsilon):
             args_inc = reshape_grads(flattened_args_inc, args)
             F_armijo = (target_func(set, *args_inc)[0] - target_func(set, *args)[0])
             F_armijo_sigma = (sigma * alpha * np.matmul(flattened_grads.T, d))
-        prev_args = args
-        prev_grad = grad
+        prev_args = np.copy(args)
+        prev_grad = np.copy(grad)
         flattened_args = flattened_args + alpha * d
         args = reshape_grads(flattened_args, args)
         err_val, grad = target_func(set, *args, calc_grads=True)
         flattened_grads = make_flat(grad)
         p = flattened_args - make_flat(prev_args)
+        # if not np.array_equal(p, alpha*d):
+        #     print(iter)
         q = flattened_grads - make_flat(prev_grad)
         s = np.matmul(B, q)
         tau = np.matmul(s.T, q)
         mu = np.matmul(p.T, q)
-        v = 1 / mu * p - 1 / tau * s
+        v = (1 / mu) * p - (1 / tau) * s
         if abs(mu) < 10e-20:
             B = np.identity(flattened_args.size)
-            # B = B/np.linalg.norm(B)
             print("reset B")
         # elif abs(mu) < (10e-6) * np.matmul(p.T, np.matmul(B, p)):
         #     print("continue")
-        elif np.matmul(flattened_grads.T, d) > c2 * np.matmul(make_flat(prev_grad).flatten().T, d):
-            B = B + 1 / mu * np.matmul(p, p.T) - 1 / tau * np.matmul(s, s.T) + tau * np.matmul(v, v.T)
+        if np.matmul(flattened_grads.T, d) > c2 * np.matmul(make_flat(prev_grad).flatten().T, d) and mu != 0 and tau != 0:
+            B = B + ((1 / mu) * np.matmul(p, p.T)) - ((1 / tau) * np.matmul(s, s.T)) + tau * np.matmul(v, v.T)
             """H = np.linalg.inv(rosen_hess(x))
             print(B - H)"""
         iter += 1
         print(err_val)
-        if iter == 1000:
-            continue
+        if not iter % 50:
+            print("grad norm" + str(np.linalg.norm(flattened_grads)))
     end = time.time()
     # plot_graph(figure_title + "\nTotal running time: " + str(("{:.5f}".format(end - start))) + " sec", iter,
     #            convergence_curve, save_name)
@@ -293,16 +294,16 @@ if __name__ == "__main__":
     W1 = np.array(np.random.rand(2, 4) / np.sqrt(2))
     W2 = np.array(np.random.rand(4, 3) / 2)
     W3 = np.array(np.random.rand(3, 1) / np.sqrt(3))
-    b1 = np.array(np.random.rand(4, 1) / 2)
-    b2 = np.array(np.random.rand(3, 1) / np.sqrt(3))
-    b3 = np.array(np.random.rand(1, 1))
+    b1 = np.zeros((4, 1))
+    b2 = np.zeros((3, 1))
+    b3 = np.zeros((1, 1))
     args = [W1, W2, W3, b1, b2, b3]
     alpha0 = 1
     sigma = 0.25
     beta = 0.5
     epsilon = 1e-5
-    BFGS(psi_train, training_set, args, alpha0, sigma, beta, epsilon)
-    run_and_plot_test_set(test_set, args)
+    err_val, new_args = BFGS(psi_train, training_set, args, alpha0, sigma, beta, epsilon)
+    run_and_plot_test_set(test_set, new_args)
     # plot_grad_diff_graphs(x, W1, W2, W3, b1, b2, b3)
     # plot_objective_func()
 
