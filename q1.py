@@ -231,14 +231,26 @@ def BFGS(target_func, set, args, alpha0, sigma, beta, epsilon):
         flattened_args = make_flat(args)
         flattened_args_inc = flattened_args + alpha*d
         args_inc = reshape_grads(flattened_args_inc, args)
-        F_armijo = (target_func(set, *args_inc)[0] - target_func(set, *args)[0])
-        F_armijo_sigma = (sigma * alpha * np.matmul(flattened_grads.T, d))
-        while F_armijo > F_armijo_sigma:
-            alpha = beta * alpha
+        # F_armijo = (target_func(set, *args_inc)[0] - target_func(set, *args)[0])
+        # F_armijo_sigma = (sigma * alpha * np.matmul(flattened_grads.T, d))
+        counter = 0
+        armijo_flag = True
+        c = np.matmul(flattened_grads.T, d)
+        while armijo_flag:
             flattened_args_inc = flattened_args + alpha * d
             args_inc = reshape_grads(flattened_args_inc, args)
-            F_armijo = (target_func(set, *args_inc)[0] - target_func(set, *args)[0])
-            F_armijo_sigma = (sigma * alpha * np.matmul(flattened_grads.T, d))
+            to_check_err_val, to_check_grads = target_func(set, *args_inc)
+            F_armijo = (to_check_err_val - err_val)
+            F_armijo_sigma = (sigma * alpha * c)
+            counter += 1
+            if counter == 300:
+                armijo_flag = False
+                B = np.identity(flattened_args.size)
+                print("reset B")
+            elif (np.matmul(-d.T, make_flat(to_check_grads)) <= -c2*c) and (F_armijo <= F_armijo_sigma):
+                armijo_flag = False
+            else:
+                alpha = beta * alpha
         prev_args = np.copy(args)
         prev_grad = np.copy(grad)
         flattened_args = flattened_args + alpha * d
@@ -253,9 +265,9 @@ def BFGS(target_func, set, args, alpha0, sigma, beta, epsilon):
         tau = np.matmul(s.T, q)
         mu = np.matmul(p.T, q)
         v = (1 / mu) * p - (1 / tau) * s
-        if abs(mu) < 10e-20:
-            B = np.identity(flattened_args.size)
-            print("reset B")
+        # if abs(mu) < 10e-20:
+        #     B = np.identity(flattened_args.size)
+        #     print("reset B")
         # elif abs(mu) < (10e-6) * np.matmul(p.T, np.matmul(B, p)):
         #     print("continue")
         if np.matmul(flattened_grads.T, d) > c2 * np.matmul(make_flat(prev_grad).flatten().T, d) and mu != 0 and tau != 0:
@@ -266,6 +278,7 @@ def BFGS(target_func, set, args, alpha0, sigma, beta, epsilon):
         print(err_val)
         if not iter % 50:
             print("grad norm" + str(np.linalg.norm(flattened_grads)))
+            print("iteration: " + str(iter))
     end = time.time()
     # plot_graph(figure_title + "\nTotal running time: " + str(("{:.5f}".format(end - start))) + " sec", iter,
     #            convergence_curve, save_name)
