@@ -189,6 +189,479 @@ end{center}
 \end_layout
 
 \begin_layout Subsubsection*
+Part 1 – Deep Neural Network:
+\end_layout
+
+\begin_layout Paragraph*
+Task 1:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=x_{1}e^{-\left(x_{1}^{2}+x_{1}^{2}\right)}\ ,\phi=tanh\left(x\right)=\frac{1-e^{x}}{1+e^{x}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left\langle A,B\right\rangle =Tr\left(A^{T}B\right)=Tr\left(AB^{T}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F\left(x,W_{1},W_{2},W_{3},b_{1},b_{2},b_{3}\right)=W_{3}^{T}\phi_{2}\left(W_{2}^{T}\phi_{1}\left(W_{1}^{T}x+b_{1}\right)+b_{2}\right)+b_{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+r_{i}=F\left(x^{i},W\right)-y_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\psi\left(r\right)=r^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{r}\psi=2r
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E=\psi(r)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{x}E=J_{F\left(x\right)}^{T}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+J_{F\left(x\right)}=W_{3}^{T}\Phi_{2}^{\prime}W_{2}^{T}\Phi_{1}^{\prime}W_{1}^{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote
+\begin_inset Formula $u_{1}=W_{1}^{T}x+b_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{1}=dW_{1}^{T}x$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{1}}E^{T}du_{1}=\nabla_{u_{1}}E^{T}dW_{1}^{T}x=Tr\left(\nabla_{u_{1}}E^{T}dW_{1}^{T}x\right)=Tr\left(x\nabla_{u_{1}}E^{T}dW_{1}^{T}\right)=\left\langle x\text{\nabla}_{u_{1}}E^{T},dW_{1}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{1}}E=\Phi_{1}^{\prime}W_{2}\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $W_{1}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{W_{1}}E=x\nabla_{r}\psi W_{3}^{T}\Phi_{2}^{\prime}W_{2}^{T}\Phi_{1}^{\prime}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote 
+\begin_inset Formula $u_{1}=W_{1}^{T}x+b_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{1}=db_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{1}}E^{T}du_{1}=\nabla_{u_{1}}E^{T}db_{1}=Tr\left(\nabla_{u_{1}}E^{T}db_{1}\right)=\left\langle \nabla_{u_{1}}E,db_{1}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{1}}E=\Phi_{1}^{\prime}W_{2}\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{b_{1}}E=\Phi_{1}^{\prime}W_{2}\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote 
+\begin_inset Formula $u_{2}=W_{2}^{T}\phi_{1}\left(W_{1}^{T}x+b_{1}\right)+b_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{2}=dW_{2}^{T}\phi_{1}\left(u_{1}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{2}}E^{T}du_{2}=\nabla_{u_{2}}E^{T}dW_{2}^{T}\phi_{1}\left(u_{1}\right)=Tr\left(\nabla_{u_{2}}E^{T}dW_{2}^{T}\phi_{1}\left(u_{1}\right)\right)=Tr\left(\phi_{1}\left(u_{1}\right)\nabla_{u_{2}}E^{T}dW_{2}^{T}\right)=\left\langle ϕ_{1}u_{1}\nabla_{u_{2}}E^{T},dW_{2}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{2}}E=\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $W_{2}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{W_{2}}E=\phi_{1}\left(u_{1}\right)\nabla_{r}\psi W_{3}^{T}\Phi_{2}^{\prime}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote 
+\begin_inset Formula $u_{2}=W_{2}^{T}\phi_{1}\left(W_{1}^{T}x+b_{1}\right)+b_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{2}=db_{2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{2}}E^{T}du_{2}=\nabla_{u_{2}}E^{T}db_{2}=Tr\left(\nabla_{u_{2}}E^{T}db_{2}\right)=Tr\left(\nabla_{u_{2}}E^{T}db_{2}\right)=\left\langle \nabla_{u_{2}}E,db_{2}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{2}}E=\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{b_{2}}E=\Phi_{2}^{\prime}W_{3}\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote 
+\begin_inset Formula $u_{3}=W_{3}^{T}\phi_{2}\left(W_{2}^{T}\phi_{1}\left(W_{1}^{T}x+b_{1}\right)+b_{2}\right)+b_{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{3}=dW_{3}^{T}\phi_{2}\left(u_{2}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{3}}E^{T}du_{3}=\nabla_{u_{3}}E^{T}dW_{3}^{T}\phi_{2}\left(u_{2}\right)=Tr\left(\nabla_{u_{2}}E^{T}dW_{3}^{T}\phi_{2}\left(u_{2}\right)\right)=Tr\left(\phi_{2}\left(u_{2}\right)\nabla_{u_{3}}E^{T}dW_{3}^{T}\right)=\left\langle ϕ_{2}u_{2}\nabla_{u_{3}}E^{T},dW_{3}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{3}}E=\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $W_{3}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{W_{3}}E=\phi_{2}\left(u_{2}\right)\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us denote
+\begin_inset Formula $u_{3}=W_{3}^{T}\phi_{2}\left(W_{2}^{T}\phi_{1}\left(W_{1}^{T}x+b_{1}\right)+b_{2}\right)+b_{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $du_{3}=db_{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+dE=\nabla_{u_{3}}E^{T}du_{3}=\nabla_{u_{3}}E^{T}db_{3}=Tr\left(\nabla_{u_{2}}E^{T}db_{3}\right)=Tr\left(\nabla_{u_{3}}E^{T}db_{3}\right)=\left\langle \nabla_{u_{3}}E,db_{3}\right\rangle 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{u_{3}}E=\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And therefore the gradient of the Error with respect to 
+\begin_inset Formula $b_{3}$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla_{b_{3}}E=\nabla_{r}\psi
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Task 2:
+\end_layout
+
+\begin_layout Standard
+Plotting the Objective Function yields:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename graphs/original_graph.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Task 3:
+\end_layout
+
+\begin_layout Standard
+Plotting the network reconstruction yields:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename graphs/reconstructed_graph.svg
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Graphics
+	filename graphs/convergence_graph.svg
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
 Part 2 – Augmented Lagrangian:
 \end_layout
 
