@@ -11,7 +11,7 @@ def plot_graph(iter, y_values):
     fig, axs = plt.subplots(2, 3)
     axs[0, 0].plot(x, y_values[0])
     axs[0, 0].set_title('Gradient of the Augmented\nLagrangian aggregate')
-    axs[0, 1].plot(x,  y_values[1], 'bo')
+    axs[0, 1].plot(x, y_values[1])
     axs[0, 1].set_title('Maximal constraint\nviolation')
     axs[0, 2].plot(x, y_values[2])
     axs[0, 2].set_title('Residual in the\nobjective function')
@@ -21,9 +21,8 @@ def plot_graph(iter, y_values):
     axs[1, 1].set_title('Distance to the\noptimal multipliers')
     fig.delaxes(axs[1, 2])
 
-    for i, ax in enumerate(axs.flat):
-        if i != 1:
-            ax.set(yscale='log')
+    for ax in axs.flat:
+        ax.set(yscale='log')
     plt.show()
 
 
@@ -127,11 +126,11 @@ def augmented_lagrangian(constrains: list):
         pk = min(p_max, alpha * pk)
         iter += 1
         l2_norm += [np.linalg.norm(der_F_p(x_k, constrains, pk, lambda_k))]
-        maximal_violation += [np.argmax(constrain1(x_k)) + 1]
+        maximal_violation += [np.max(constrain1(x_k), 0)]
         residual_objective += [abs(f(np.array([2 / 3, 2 / 3])) - f(x_k))]
         optimal_point_dist += [np.linalg.norm(x_k - np.array([2 / 3, 2 / 3]))]
         optimal_multipliers_dist += [np.linalg.norm(lambda_k - np.array([12, 34 / 3, 0]))]
-    plot_graph(iter, [l2_norm,maximal_violation,residual_objective,optimal_point_dist,optimal_multipliers_dist])
+    plot_graph(iter, [l2_norm, maximal_violation, residual_objective, optimal_point_dist, optimal_multipliers_dist])
     return x_k, lambda_k
 
 
